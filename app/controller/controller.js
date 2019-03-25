@@ -2,7 +2,7 @@ const db = require('../config/db.config.js');
 const config = require('../config/config.js');
 const User = db.user;
 const Role = db.role;
-
+const Post = db.post;
 const Op = db.Sequelize.Op;
 
 var jwt = require('jsonwebtoken');
@@ -33,8 +33,8 @@ exports.signup = (req, res) => {
 		});
 	}).catch(err => {
 		res.status(500).send("Fail! Error -> " + err);
-	})
-}
+	});
+};
 
 exports.signin = (req, res) => {
 	console.log("Sign-In");
@@ -62,7 +62,7 @@ exports.signin = (req, res) => {
 	}).catch(err => {
 		res.status(500).send('Error -> ' + err);
 	});
-}
+};
 
 exports.userContent = (req, res) => {
 	User.findOne({
@@ -85,8 +85,27 @@ exports.userContent = (req, res) => {
 			"description": "Can not access User Page",
 			"error": err
 		});
-	})
-}
+	});
+};
+
+exports.feedContent = (req, res) => {
+	Post.findAll(
+		// {
+		// where: {id: req.userId},
+		// attributes: ['title', 'postData']
+	// }
+	).then(posts => {
+		res.status(200).json({
+			"Description": 'Feed Content Page',
+			'feeds': posts
+		});
+	}).catch(err => {
+		res.status(500).json({
+			"description": "Can not access Feeds Page",
+			"error": err
+		});
+	});
+};
 
 exports.adminBoard = (req, res) => {
 	User.findOne({
@@ -110,7 +129,7 @@ exports.adminBoard = (req, res) => {
 			"error": err
 		});
 	})
-}
+};
 
 exports.managementBoard = (req, res) => {
 	User.findOne({
@@ -134,4 +153,32 @@ exports.managementBoard = (req, res) => {
 			"error": err
 		});
 	})
-}
+};
+
+exports.post = (req, res) => {
+	console.log("Processing func -> CreatePost");
+	Post.create({
+		id: req.body.id,
+		title: req.body.title,
+		postdata: req.body.postdata,
+	}).then(post => {
+		// Role.findAll({
+		// 	where: {
+		// 	  name: {
+		// 		[Op.or]: req.body.roles
+		// 	  }
+		// 	}
+		//   }).then(roles => {
+		// 	  user.setRoles(roles).then(() => {
+		// 		  res.send("User registered successfully!");
+		// 	  });
+		//   }).catch(err => {
+		// 	  res.status(500).send("Error -> " + err);
+		//   });
+		console.log(post);
+	}).catch(err => {
+		res.status(500).send("Fail! Error -> " + err);
+	});
+};
+
+

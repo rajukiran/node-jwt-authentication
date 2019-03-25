@@ -14,4 +14,9 @@ module.exports = function(app) {
 	app.get('/api/test/pm', [authJwt.verifyToken, authJwt.isPmOrAdmin], controller.managementBoard);
 	
 	app.get('/api/test/admin', [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
-}
+
+	app.post('/api/test/post', [authJwt.verifyToken], controller.post);
+
+	app.get('/api/test/posts', [authJwt.verifyToken], controller.feedContent);
+
+};
